@@ -14,8 +14,16 @@ import os
 import sys
 from typing import Any
 
+# Đảm bảo stdout/stderr dùng UTF-8 (tránh UnicodeEncodeError với emoji khi
+# script bị chạy qua subprocess/pipe trên Windows - codepage mặc định cp1258).
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # Standard Model Identifier
-GEMINI_MODEL = "gemini-3.5-flash"
+GEMINI_MODEL = "gemini-3.5-flash-lite"
 
 # ===========================================================================
 # 🛡️ Operational Boundaries to Enforce via System Prompt:
