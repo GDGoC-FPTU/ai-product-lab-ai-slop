@@ -1,0 +1,1 @@
+AI giúp tôi hiện thực hóa ý tưởng thành code dựa trên thiết kế và các quy tắc đã đề ra, từ đó đẩy nhanh quá trình phát triển. Ngoài ra, AI còn gợi ý các tài liệu và nguồn học phù hợp để tôi nâng cao kỹ năng giải quyết vấn đề.
