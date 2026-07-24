@@ -2,16 +2,14 @@
 Nhóm quyết định chọn bài toán "Vinmec - Soạn thảo tóm tắt hồ sơ xuất viện" để thực hiện Deep-Dive.
 
 ## 3.2. Problem Statement (6-field) & Metrics (15 min)
-Điền đầy đủ 6 trường thông tin của bài toán:
-
 | Field | Nội dung chi tiết |
 | --- | --- |
-| **1. Actor / Operator** | Nhân viên Phân tích Vận hành (Back-office / Operations Analyst) của Trung tâm điều hành Xanh SM. |
-| **2. Current Workflow** | Hằng ngày, nhân viên truy xuất danh sách các cuốc xe bị hủy từ cơ sở dữ liệu. Họ phải tải xuống, mở từng file ghi âm cuộc gọi giữa tài xế và khách hàng hoặc đọc các ghi chú thô. Sau đó, họ nghe, ghi chú thủ công lý do chính (VD: tài xế đến trễ, khách đổi ý, app định vị sai) và tổng hợp vào file Excel để làm báo cáo cải tiến. |
-| **3. Bottleneck** | Bước nghe lại file ghi âm và đọc hiểu chuỗi văn bản thô tốn cực kỳ nhiều thời gian (khoảng 10 phút/cuốc). Do giới hạn sức người, team hiện tại chỉ có thể lấy mẫu ngẫu nhiên (sample 5-10%) thay vì phân tích 100% dữ liệu cuốc hủy. |
-| **4. Business Impact** | Việc chỉ phân tích mẫu ngẫu nhiên dẫn đến bỏ lọt các lỗi mang tính hệ thống (ví dụ: rớt mạng nội bộ ở một khu vực, hoặc lỗi định vị GPS sai lệch). Hậu quả là tỷ lệ hủy chuyến không được cải thiện tận gốc, gây rò rỉ doanh thu, lãng phí thời gian di chuyển của tài xế và giảm SLA dịch vụ. |
-| **5. Success Metric** | Hệ thống có khả năng tự động xử lý và phân loại **100%** cuốc hủy trong ngày. Thời gian trích xuất và gán nhãn giảm từ 10 phút xuống **dưới 30 giây/cuốc**. Độ chính xác của việc phân loại đạt ngưỡng **> 90%** so với con người. |
-| **6. Operational Boundary** | AI được phép chuyển đổi giọng nói thành văn bản, sử dụng LLM API (ví dụ: Gemini) để tóm tắt transcript và gán nhãn vào 10 danh mục có sẵn. Bắt buộc phải trả về dữ liệu định dạng **cấu trúc JSON nghiêm ngặt** để ghi vào cơ sở dữ liệu (như PostgreSQL). <br/>**TUYỆT ĐỐI KHÔNG:** AI không được quyền tự động ban hành quyết định xử phạt tài xế hoặc hoàn tiền cho khách hàng dựa trên lý do hủy. Mọi quyết định liên quan đến tài chính/nhân sự phải do con người duyệt. |
+| **1. Actor / Operator** | Bác sĩ điều trị hoặc Điều dưỡng hành chính tại bệnh viện Vinmec. |
+| **2. Current Workflow** | Khi bệnh nhân chuẩn bị xuất viện, bác sĩ phải tổng hợp thông tin từ nhiều phân hệ trong Bệnh án điện tử (EMR): lý do nhập viện, sinh hiệu, kết quả cận lâm sàng (xét nghiệm, siêu âm, X-quang), chẩn đoán, quá trình điều trị và đơn thuốc. Sau đó, họ phải tự tổng hợp, chắt lọc và gõ thủ công báo cáo tóm tắt xuất viện vào form hệ thống. |
+| **3. Bottleneck** | Việc tra cứu dữ liệu rải rác ở nhiều tab/phần mềm khác nhau và viết lại thành một đoạn văn bản tóm tắt y khoa mạch lạc tiêu tốn quá nhiều thời gian (thường từ 10-15 phút cho mỗi hồ sơ). Quá trình này hoàn toàn mang tính thủ tục hành chính, lặp đi lặp lại và dễ gây mệt mỏi (burnout) cho đội ngũ y tế. |
+| **4. Business Impact** | Bác sĩ tốn quá nhiều thời gian cho giấy tờ hành chính thay vì thăm khám bệnh nhân. Về mặt vận hành, thủ tục xuất viện bị kéo dài khiến bệnh nhân phải chờ đợi lâu, làm giảm sự hài lòng (NPS) và làm chậm tốc độ luân chuyển giường bệnh (bed turnover rate) của bệnh viện. |
+| **5. Success Metric** | Hệ thống tự động trích xuất và tạo bản nháp (draft) tóm tắt xuất viện trong thời gian **dưới 10 giây/hồ sơ**. Giảm thời gian hoàn thiện hồ sơ của bác sĩ từ 15 phút xuống **< 2 phút**. Tỷ lệ chấp nhận bản nháp của AI (ít hoặc không cần chỉnh sửa tay) đạt **> 85%**. |
+| **6. Operational Boundary** | AI (ví dụ: thông qua Gemini API) được cấp quyền đọc văn bản EMR (sau khi đã che giấu/ẩn danh thông tin định danh bệnh nhân PII) và buộc phải trả về dữ liệu tuân thủ **cấu trúc JSON nghiêm ngặt** (bao gồm các keys cố định như: `symptoms`, `diagnosis`, `treatment_summary`, `prescriptions`, `follow_up_advice`) để map thẳng vào form UI của hệ thống. **TUYỆT ĐỐI KHÔNG:** AI không được phép đưa ra phác đồ điều trị mới, không thay đổi chẩn đoán, và không được phép tự động ký duyệt xuất viện. Toàn bộ đầu ra của mô hình phải qua bước Human-in-the-loop (HITL) để bác sĩ chỉnh sửa và phê duyệt cuối cùng. |
 
 ## 3.3. Future-State Flow & AI Fit (25 min)
 Xác định mức AI Fit (AI-Fit Matrix): Giải pháp thuộc nhóm [x] LLM Feature (Áp dụng trực tiếp năng lực tóm tắt và xử lý ngôn ngữ của LLM vào một quy trình đã có cấu trúc tĩnh, không cần Agentic Loop vì quy trình y tế cần sự kiểm soát luồng nghiêm ngặt).
