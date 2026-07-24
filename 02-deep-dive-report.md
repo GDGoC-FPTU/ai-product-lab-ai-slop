@@ -1,7 +1,10 @@
 Tên nhóm: AI slop
 Họ và tên kèm Mã số sinh viên (MSSV) 
 Nguyen Minh Nhat  - 2A202601131
-
+Nguyễn Kim Trung Đức - 2A202601325
+Thach Minh Quan  - 2A202601585 
+Nguyễn Huy Nghĩa - 2A202601943
+Phạm Thái Sơn - 2A202601984
 
 # 🏗️ Phase 3 — DEEP-DIVE (Nhóm, 85 min)
 Nhóm quyết định chọn bài toán "Vinmec - Soạn thảo tóm tắt hồ sơ xuất viện" để thực hiện Deep-Dive.
